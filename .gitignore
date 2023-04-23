@@ -1,0 +1,4 @@
+rust_backend/target
+*.zip
+model/data
+model/.ipynb_checkpoints/
