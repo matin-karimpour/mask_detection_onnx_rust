@@ -4,18 +4,24 @@ use std:: io;
 fn main() -> TractResult<()> {
     let model: SimplePlan<TypedFact, Box<dyn TypedOp>, Graph<TypedFact, Box<dyn TypedOp>>> =init_model()?;
 
+     loop {
+    let mut image_path = String::new();
+    io::stdin().read_line(&mut image_path)?;
+    let image_path = String::from(image_path.trim_end());
 
-    
+    if image_path == String::from("n"){
+        break
+    }
     // open image, resize it and make a Tensor out of it
-    let image = preprocess(String::from("grace_hopper.jpg"));
+    let image = preprocess(image_path);
     
     // run the model on the input
-    let best = predict(model, image)?;
+    let best = predict(&model, image)?;
     if best == 3 {
         println!("with mask :)");
     }else {
         println!("without mask :(");
-    }
+    }}
     //println!("result: {best:?}");
     Ok(())
 }
@@ -44,7 +50,7 @@ fn preprocess(image_path: String) -> Tensor {
 
 }
 
-fn predict(model:SimplePlan<TypedFact, Box<dyn TypedOp>, Graph<TypedFact, Box<dyn TypedOp>>>
+fn predict(model:&SimplePlan<TypedFact, Box<dyn TypedOp>, Graph<TypedFact, Box<dyn TypedOp>>>
      , image: Tensor ) -> TractResult<i32> {
         
     
