@@ -6,6 +6,7 @@ fn main() -> TractResult<()> {
 
      loop {
     let mut image_path = String::new();
+    println!("Enter image path or insert 'n' to exit:");
     io::stdin().read_line(&mut image_path)?;
     let image_path = String::from(image_path.trim_end());
 
@@ -27,7 +28,9 @@ fn main() -> TractResult<()> {
 }
 
 fn init_model() -> Result<SimplePlan<TypedFact, Box<dyn TypedOp>, Graph<TypedFact, Box<dyn TypedOp>>>, tract_onnx::tract_core::anyhow::Error>{
+    println!("Initialize the model...");
     let model: Result<SimplePlan<TypedFact, Box<dyn TypedOp>, Graph<TypedFact, Box<dyn TypedOp>>>, tract_onnx::tract_core::anyhow::Error>= tract_onnx::onnx()
+        
         // load the model
         .model_for_path("Face_Mask_Classification.onnx")?
         // optimize the model
@@ -38,6 +41,7 @@ fn init_model() -> Result<SimplePlan<TypedFact, Box<dyn TypedOp>, Graph<TypedFac
 }
 
 fn preprocess(image_path: String) -> Tensor {
+    println!("Preprocessing...");
     let image = image::open(image_path).unwrap().to_rgb8();
     let resized =
         image::imageops::resize(&image, 480, 480, ::image::imageops::FilterType::Triangle);
@@ -54,7 +58,7 @@ fn predict(model:&SimplePlan<TypedFact, Box<dyn TypedOp>, Graph<TypedFact, Box<d
      , image: Tensor ) -> TractResult<i32> {
         
     
-
+    println!("Predicting...");
     let result = model.run(tvec!(image.into()))?;
 
     // find and display the max value with its index
